@@ -18,7 +18,3 @@ class PositiveNumbers {
 		askForPositiveNumbers();
 	}
 }
-
-
-		
-
