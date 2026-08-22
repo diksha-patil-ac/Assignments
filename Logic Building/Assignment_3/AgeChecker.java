@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 class AgeChecker {
 
-	static void checkAgeCategory(int age) {
+	public static void checkAgeCategory(int age) {
 		
 	if(age < 18) {
 		System.out.println("You are a minor");
