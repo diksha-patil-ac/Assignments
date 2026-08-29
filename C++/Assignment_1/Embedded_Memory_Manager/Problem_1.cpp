@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 
-
 void resetSensorPairV1(int reading1, int reading2){
     int temp = reading1;
     reading1 = reading2;
