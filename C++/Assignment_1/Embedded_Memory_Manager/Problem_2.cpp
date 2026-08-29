@@ -3,7 +3,6 @@
 #include <iomanip>
 using namespace std;
 
-
 double computeRMS(double* signal, int n){
 
     double sum = 0;
@@ -77,7 +76,7 @@ int main(){
     int crossings = countZeroCrossings(signal, n);
 
     cout << "Zero Crossings : " << crossings << endl;
-
+    
 
     normalise(signal, n);
 
