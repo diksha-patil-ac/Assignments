@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
 
-int main(){
+int main() {
 
     double temperature;
     int statusCode;
@@ -11,7 +11,7 @@ int main(){
     cin >> temperature;
 
     fahrenheit = (temperature * 9 / 5) + 32;
-    cout << "Temperature: " << temperature << char(248) << "C / " << fahrenheit << char(248) << "F" << endl;
+    cout << "Temperature: " << temperature << char(248) << "C  /  " << fahrenheit << char(248) << "F" << endl;
 
     if(temperature < 0){
         statusCode = -1;
@@ -34,7 +34,7 @@ int main(){
         cout << "Status : SHUTDOWN" << endl;
     }
 
-    switch(statusCode){
+    switch(statusCode) {
         case -1 :
                 cout << "Action: Sensor fault-check warning" << endl;
                 break;
