@@ -24,7 +24,6 @@ int main(){
     cout << left << setw(10) << " " << setw(12) << "Room 1" << setw(12) << "Room 2" << setw(12) << "Room 3" << endl;
     cout << "  " << endl;
 
-    cout << fixed << setprecision(1);
 
     for (int i = 0; i < floors; i++){
         cout << left << setw(10) << "Floor " << i + 1;
