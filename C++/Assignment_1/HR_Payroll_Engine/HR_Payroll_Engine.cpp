@@ -199,8 +199,6 @@ public:
 
         cout << "--------------------------------------------" << endl;
 
-        cout << fixed << setprecision(2);
-
         cout << "Basic Salary : Rs. " << basicSalary << endl;
 
         cout << "Allowances (" << allowancePercentage << "%) : Rs. " << allowance << endl;
