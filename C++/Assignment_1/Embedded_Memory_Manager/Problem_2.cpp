@@ -52,7 +52,7 @@ void applyGain(double* signal, int n, double gainFactor){
 void printSignal(double* signal, int n){
 
     for (int i = 0; i < n; i++){
-        cout << fixed << setprecision(2) << *(signal + i) << " ";
+        cout << *(signal + i) << " ";
     }
     cout << endl;
 }
