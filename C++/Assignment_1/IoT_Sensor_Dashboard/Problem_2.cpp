@@ -95,8 +95,6 @@ int main(){
 
     double average = sum / validCount;
 
-    cout << fixed << setprecision(2);
-
     cout << "Min : " << minTemp << "°C Max : " << maxTemp << "°C Avg : " << average << "°C" << endl;
 
     cout << "Normal:" << normalCount << " Warning:" << warningCount << " Critical:" << criticalCount << " Shutdown:" << shutdownCount << endl;
