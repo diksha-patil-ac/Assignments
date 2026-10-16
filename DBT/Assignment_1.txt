@@ -1,0 +1,574 @@
+  Library Management System                          
+
+
+Books                 Authors        Members        Borrow_records
+
+book_id               author_id      member_id      record_id    
+title                 name           name           member_id
+author_id             country        email          book_id
+published_year                       phone          borrow_date
+available_copies                                    return_date
+
+
+
+show databases;
+
+-- 1. Define a schema for a Library Management System with the following entities:
+   - Books
+   - Authors
+   - Members
+   - Borrow_Records
+
+create database library_management_system; 
+
+use library_management_system; 
+
+-- 2. Write the SQL command to create a table Authors with the following fields:
+   - author_id (Primary Key, INT)
+   - name (VARCHAR(100))
+   - country (VARCHAR(50))
+
+create table authors (
+author_id int, 
+name varchar(100), 
+country varchar(50), 
+primary key (author_id)
+);
+
+-- 3. Write the SQL command to create a table Books with the following fields:
+   - book_id (Primary Key, INT)
+   - title (VARCHAR(150))
+   - author_id (Foreign Key referencing Authors)
+   - published_year (YEAR)
+   - available_copies (INT)
+
+create table books (
+book_id int, 
+title varchar(150), 
+author_id int, 
+published_year year, 
+available_copies int, 
+primary key (book_id), 
+foreign key (author_id) references authors (author_id)
+);
+
+-- 4. Write the SQL command to create a table Members with:
+   - member_id (Primary Key, INT)
+   - name (VARCHAR(100))
+   - email (VARCHAR(100), unique)
+   - phone (VARCHAR(15))
+
+create table members (
+member_id int primary key, 
+name varchar(100),
+email varchar(100) unique,
+phone varchar(15)
+);
+
+-- 5. Write the SQL command to create a table Borrow_Records with:
+   - record_id (Primary Key, INT)
+   - member_id (Foreign Key referencing Members)
+   - book_id (Foreign Key referencing Books)
+   - borrow_date (DATE)
+   - return_date (DATE)
+
+create table borrow_records (
+record_id int primary key,
+member_id int, 
+book_id int,
+borrow_date date,
+return_date date, 
+foreign key (member_id) references members (member_id), 
+foreign key (book_id) references books (book_id)
+);
+
+-- 6. Modify the Books table to add a column genre of type VARCHAR(50).
+alter table books add genre varchar(50);
+
+-- 7. Write the SQL command to drop the Borrow_Records table.
+drop table borrow_records;
+
+-- 8. Insert 3 records into the Authors table.
+insert into authors (author_id, name, country)
+values
+(101, 'James', 'India'),
+(102, 'Smira', 'America'),
+(103, 'Joel', 'France');
+
+-- 9. Insert 5 books into the Books table.
+insert into books (book_id, title, author_id, published_year, available_copies)
+values
+(01, 'Java', 101, 2015, 50),
+(02, 'DBMS', 102, 2012, 50),
+(03, 'ADS', 103, 2019, 50),
+(04, 'CPP', 102, 2005, 50),
+(05, 'mysql', 103, 2023, 50);
+
+-- 10. Insert 3 members into the Members table.
+insert into members (member_id, name, email, phone)
+values
+(1, 'shisha', 'shisha@gmail.com', '9876451238'),
+(2, 'priya', 'priya@gmail.com', '9876451238'),
+(3, 'disha', 'disha@gmail.com', '9876451238');
+
+-- 11. Insert 4 borrow records into the Borrow_Records table.
+[cteate borrow table because it is already dropped]
+
+create table borrow_records (
+record_id int primary key,
+member_id int, book_id int,
+borrow_date date,
+return_date date,
+foreign key (member_id) references members (member_id),
+foreign key (book_id) references books (book_id)
+);
+
+insert into borrow_records (record_id, member_id, book_id, borrow_date, return_date)
+values
+(01, 2, 04, '2026-09-15', '2026-09-25'),
+(02, 3, 05, '2026-09-17', '2026-09-27'),
+(03, 2, 01, '2026-10-03', '2026-10-13'),
+(04, 1, 03, '2026-10-14', '2026-10-24');
+
+-- 12. Write an SQL query to select all books where published_year is after 2015.
+select * from books where published_year > 2015;
+
+-- 13. Write a SQL query to create a foreign key & primary key relationship between two tables.
+alter table books
+add constraint fk_book
+foreign key(author_id)
+references authors(author_id);
+
+-- 14. Write an SQL query to find all members who have borrowed the book with title 'Database Systems'.
+select m.name
+from members m, borrow_records br, books b
+where m.member_id = br.member_id
+and br.book_id = b.book_id
+and b.title = 'Database Systems';
+
+select m.name
+from members m, books b, borrow_records br
+where m.member_id = br.member_id
+and br.book_id = b.book_id
+and b.title = 'Java';
+
+-- 15. Update the available_copies column of a specific book (choose any book) by reducing it by 1 after it is borrowed.
+update books 
+set available_copies = available_copies-1
+where book_id IN (1, 3, 4, 5);
+
+-- 16. Delete a record from Members where member_id = 3.
+delete from borrow_records where member_id = 3;
+delete from members where member_id = 3;
+
+-- 17. Update a Book name record from Book table  with id = 1.
+update books
+set title = 'html'
+where book_id = 1;
+
+-- 18. Write an SQL query to list all books along with their authors' names.
+select books.book_id, books.title, authors.name, books.published_year, books.available_copies
+from books
+inner join authors 
+On books.author_id = authors.author_id;
+
+-- 19. Write an SQL query to delete all books from the Books table where the published_year is before 2000.
+delete from books where published_year < 2000;
+
+-- 20. Write an SQL query to find all books that are never borrowed (i.e., no records in Borrow_Records).
+select * from books 
+where book_id
+NOT IN (select book_id from borrow_records);
+
+
+OUTPUT:
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| aug26              |
+| dbt_practice       |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> create database library_management_system;
+Query OK, 1 row affected (0.05 sec)
+
+mysql> use library_management_system;
+Database changed
+mysql> create table authors (
+    -> author_id int,
+    -> name varchar(100),
+    -> country varchar(50),
+    -> primary key (author_id)
+    -> );
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> create table books (
+    -> book_id int,
+    -> title varchar(50),
+    -> author_id int,
+    -> published_year year,
+    -> available_copies int,
+    -> primary key (book_id),
+    -> foreign key (author_id) references authors (author_id)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table members (
+    -> member_id int primary key,
+    -> name varchar(100),
+    -> email varchar(100) unique,
+    -> phone varchar(15)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table borrow_records (
+    -> record_id int primary key,
+    -> member_id int, book_id int,
+    -> borrow_date date,
+    -> return_date date,
+    -> foreign key (member_id) references members (member_id),
+    -> foreign key (book_id) references books (book_id)
+    -> );
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> show tables;
++-------------------------------------+
+| Tables_in_library_management_system |
++-------------------------------------+
+| authors                             |
+| books                               |
+| borrow_records                      |
+| members                             |
++-------------------------------------+
+4 rows in set (0.00 sec)
+
+mysql> desc authors;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| author_id | int          | NO   | PRI | NULL    |       |
+| name      | varchar(100) | YES  |     | NULL    |       |
+| country   | varchar(50)  | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+3 rows in set (0.05 sec)
+
+mysql> desc books;
++------------------+-------------+------+-----+---------+-------+
+| Field            | Type        | Null | Key | Default | Extra |
++------------------+-------------+------+-----+---------+-------+
+| book_id          | int         | NO   | PRI | NULL    |       |
+| title            | varchar(50) | YES  |     | NULL    |       |
+| author_id        | int         | YES  | MUL | NULL    |       |
+| published_year   | year        | YES  |     | NULL    |       |
+| available_copies | int         | YES  |     | NULL    |       |
++------------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc members;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| member_id | int          | NO   | PRI | NULL    |       |
+| name      | varchar(100) | YES  |     | NULL    |       |
+| email     | varchar(100) | YES  | UNI | NULL    |       |
+| phone     | varchar(15)  | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc borrow_records;
++-------------+------+------+-----+---------+-------+
+| Field       | Type | Null | Key | Default | Extra |
++-------------+------+------+-----+---------+-------+
+| record_id   | int  | NO   | PRI | NULL    |       |
+| member_id   | int  | YES  | MUL | NULL    |       |
+| book_id     | int  | YES  | MUL | NULL    |       |
+| borrow_date | date | YES  |     | NULL    |       |
+| return_date | date | YES  |     | NULL    |       |
++-------------+------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> alter table books add genre varchar(50);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc books;
++------------------+-------------+------+-----+---------+-------+
+| Field            | Type        | Null | Key | Default | Extra |
++------------------+-------------+------+-----+---------+-------+
+| book_id          | int         | NO   | PRI | NULL    |       |
+| title            | varchar(50) | YES  |     | NULL    |       |
+| author_id        | int         | YES  | MUL | NULL    |       |
+| published_year   | year        | YES  |     | NULL    |       |
+| available_copies | int         | YES  |     | NULL    |       |
+| genre            | varchar(50) | YES  |     | NULL    |       |
++------------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> drop table borrow_records;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> show tables;
++-------------------------------------+
+| Tables_in_library_management_system |
++-------------------------------------+
+| authors                             |
+| books                               |
+| members                             |
++-------------------------------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into authors (author_id, name, country)
+    -> values
+    -> (101, 'James', 'India'),
+    -> (102, 'Smira', 'America'),
+    -> (103, 'Joel', 'France');
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from authors;
++-----------+-------+---------+
+| author_id | name  | country |
++-----------+-------+---------+
+|       101 | James | India   |
+|       102 | Smira | America |
+|       103 | Joel  | France  |
++-----------+-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> insert into books (book_id, title, author_id, published_year, available_copies)
+    -> values
+    -> (01, 'Java', 101, 2015, 50),
+    -> (02, 'DBMS', 102, 2012, 50),
+    -> (03, 'ADS', 103, 2019, 50),
+    -> (04, 'CPP', 102, 2005, 50),
+    -> (05, 'mysql', 103, 2023, 50);
+Query OK, 5 rows affected (0.06 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from books;
++---------+-------+-----------+----------------+------------------+-------+
+| book_id | title | author_id | published_year | available_copies | genre |
++---------+-------+-----------+----------------+------------------+-------+
+|       1 | Java  |       101 |           2015 |               50 | NULL  |
+|       2 | DBMS  |       102 |           2012 |               50 | NULL  |
+|       3 | ADS   |       103 |           2019 |               50 | NULL  |
+|       4 | CPP   |       102 |           2005 |               50 | NULL  |
+|       5 | mysql |       103 |           2023 |               50 | NULL  |
++---------+-------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> insert into members (member_id, name, email, phone)
+    -> values
+    -> (1, 'shisha', 'shisha@gmail.com', '9876451238'),
+    -> (2, 'priya', 'priya@gmail.com', '9876451238'),
+    -> (3, 'disha', 'disha@gmail.com', '9876451238');
+Query OK, 3 rows affected (0.05 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from members;
++-----------+--------+------------------+------------+
+| member_id | name   | email            | phone      |
++-----------+--------+------------------+------------+
+|         1 | shisha | shisha@gmail.com | 9876451238 |
+|         2 | priya  | priya@gmail.com  | 9876451238 |
+|         3 | disha  | disha@gmail.com  | 9876451238 |
++-----------+--------+------------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> create table borrow_records (
+    -> record_id int primary key,
+    -> member_id int, book_id int,
+    -> borrow_date date,
+    -> return_date date,
+    -> foreign key (member_id) references members (member_id),
+    -> foreign key (book_id) references books (book_id)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> insert into borrow_records (record_id, member_id, book_id, borrow_date, return_date)
+    -> values
+    -> (01, 2, 04, '2026-09-15', '2026-09-25'),
+    -> (02, 3, 05, '2026-09-17', '2026-09-27'),
+    -> (03, 2, 01, '2026-10-03', '2026-10-13'),
+    -> (04, 1, 03, '2026-10-14', '2026-10-24');
+Query OK, 4 rows affected (0.05 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from borrow_records;
++-----------+-----------+---------+-------------+-------------+
+| record_id | member_id | book_id | borrow_date | return_date |
++-----------+-----------+---------+-------------+-------------+
+|         1 |         2 |       4 | 2026-09-15  | 2026-09-25  |
+|         2 |         3 |       5 | 2026-09-17  | 2026-09-27  |
+|         3 |         2 |       1 | 2026-10-03  | 2026-10-13  |
+|         4 |         1 |       3 | 2026-10-14  | 2026-10-24  |
++-----------+-----------+---------+-------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from books where published_year > 2015;
++---------+-------+-----------+----------------+------------------+-------+
+| book_id | title | author_id | published_year | available_copies | genre |
++---------+-------+-----------+----------------+------------------+-------+
+|       3 | ADS   |       103 |           2019 |               50 | NULL  |
+|       5 | mysql |       103 |           2023 |               50 | NULL  |
++---------+-------+-----------+----------------+------------------+-------+
+2 rows in set (0.00 sec)
+
+mysql> alter table books
+    -> add constraint fk_book
+    -> foreign key(author_id)
+    -> references authors(author_id);
+Query OK, 5 rows affected (0.13 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from books;
++---------+-------+-----------+----------------+------------------+-------+
+| book_id | title | author_id | published_year | available_copies | genre |
++---------+-------+-----------+----------------+------------------+-------+
+|       1 | Java  |       101 |           2015 |               50 | NULL  |
+|       2 | DBMS  |       102 |           2012 |               50 | NULL  |
+|       3 | ADS   |       103 |           2019 |               50 | NULL  |
+|       4 | CPP   |       102 |           2005 |               50 | NULL  |
+|       5 | mysql |       103 |           2023 |               50 | NULL  |
++---------+-------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select m.name
+    -> from members m, borrow_records br, books b
+    -> where m.member_id = br.member_id
+    -> and br.book_id = b.book_id
+    -> and b.title = 'Database Systems';
+Empty set (0.00 sec)
+
+mysql> select m.name
+    -> from members m, books b, borrow_records br
+    -> where m.member_id = br.member_id
+    -> and br.book_id = b.book_id
+    -> and b.title = 'Java';
++-------+
+| name  |
++-------+
+| priya |
++-------+
+1 row in set (0.00 sec)
+
+mysql> update books
+    -> set available_copies = available_copies-1
+    -> where book_id IN (1, 3, 4, 5);
+Query OK, 4 rows affected (0.05 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+mysql> select * from books;
++---------+-------+-----------+----------------+------------------+-------+
+| book_id | title | author_id | published_year | available_copies | genre |
++---------+-------+-----------+----------------+------------------+-------+
+|       1 | Java  |       101 |           2015 |               49 | NULL  |
+|       2 | DBMS  |       102 |           2012 |               50 | NULL  |
+|       3 | ADS   |       103 |           2019 |               49 | NULL  |
+|       4 | CPP   |       102 |           2005 |               49 | NULL  |
+|       5 | mysql |       103 |           2023 |               49 | NULL  |
++---------+-------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> delete from borrow_records where member_id = 3;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> delete from members where member_id = 3;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from members;
++-----------+--------+------------------+------------+
+| member_id | name   | email            | phone      |
++-----------+--------+------------------+------------+
+|         1 | shisha | shisha@gmail.com | 9876451238 |
+|         2 | priya  | priya@gmail.com  | 9876451238 |
++-----------+--------+------------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> update books
+    -> set title = 'html'
+    -> where book_id = 1;
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from books;
++---------+-------+-----------+----------------+------------------+-------+
+| book_id | title | author_id | published_year | available_copies | genre |
++---------+-------+-----------+----------------+------------------+-------+
+|       1 | html  |       101 |           2015 |               49 | NULL  |
+|       2 | DBMS  |       102 |           2012 |               50 | NULL  |
+|       3 | ADS   |       103 |           2019 |               49 | NULL  |
+|       4 | CPP   |       102 |           2005 |               49 | NULL  |
+|       5 | mysql |       103 |           2023 |               49 | NULL  |
++---------+-------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select books.book_id, books.title, authors.name, books.published_year, books.available_copies
+    -> from books
+    -> inner join authors
+    -> On books.author_id = authors.author_id;
++---------+-------+-------+----------------+------------------+
+| book_id | title | name  | published_year | available_copies |
++---------+-------+-------+----------------+------------------+
+|       1 | html  | James |           2015 |               49 |
+|       2 | DBMS  | Smira |           2012 |               50 |
+|       4 | CPP   | Smira |           2005 |               49 |
+|       3 | ADS   | Joel  |           2019 |               49 |
+|       5 | mysql | Joel  |           2023 |               49 |
++---------+-------+-------+----------------+------------------+
+5 rows in set (0.00 sec)
+
+mysql> delete from books where published_year < 2000;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from books;
++---------+-------+-----------+----------------+------------------+-------+
+| book_id | title | author_id | published_year | available_copies | genre |
++---------+-------+-----------+----------------+------------------+-------+
+|       1 | html  |       101 |           2015 |               49 | NULL  |
+|       2 | DBMS  |       102 |           2012 |               50 | NULL  |
+|       3 | ADS   |       103 |           2019 |               49 | NULL  |
+|       4 | CPP   |       102 |           2005 |               49 | NULL  |
+|       5 | mysql |       103 |           2023 |               49 | NULL  |
++---------+-------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select * from books
+    -> where book_id
+    -> NOT IN (select book_id from borrow_records);
++---------+-------+-----------+----------------+------------------+-------+
+| book_id | title | author_id | published_year | available_copies | genre |
++---------+-------+-----------+----------------+------------------+-------+
+|       2 | DBMS  |       102 |           2012 |               50 | NULL  |
+|       5 | mysql |       103 |           2023 |               49 | NULL  |
++---------+-------+-----------+----------------+------------------+-------+
+2 rows in set (0.05 sec)
+
+mysql> select book_id from borrow_records;
++---------+
+| book_id |
++---------+
+|       1 |
+|       3 |
+|       4 |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from borrow_records;
++-----------+-----------+---------+-------------+-------------+
+| record_id | member_id | book_id | borrow_date | return_date |
++-----------+-----------+---------+-------------+-------------+
+|         1 |         2 |       4 | 2026-09-15  | 2026-09-25  |
+|         3 |         2 |       1 | 2026-10-03  | 2026-10-13  |
+|         4 |         1 |       3 | 2026-10-14  | 2026-10-24  |
++-----------+-----------+---------+-------------+-------------+
+3 rows in set (0.00 sec)
+
+mysql>
