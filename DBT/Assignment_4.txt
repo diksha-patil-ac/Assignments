@@ -1,0 +1,643 @@
+Employee          Department           Project
+
+emp_id             dept_id            project_id
+emp_name           dept_name          project_name 
+salary             location           dept_id
+dept_id 
+manager_id
+
+
+show databases;
+
+create database assignment_4;
+
+use assignment_4;
+
+create table department (
+dept_id int primary key,
+dept_name varchar(50),
+location varchar(50)
+);
+
+create table employee (
+emp_id int primary key auto_increment,
+emp_name varchar(50),
+salary decimal(10,2),
+dept_id int,
+manager_id int,
+foreign key (dept_id) references department(dept_id),
+foreign key (manager_id) references employee(emp_id)
+);
+
+create table project (
+project_id int primary key,
+project_name varchar(100),
+dept_id int,
+foreign key (dept_id) references department(dept_id)
+);
+
+insert into department 
+values
+(1, 'it', 'mumbai'),
+(2, 'hr', 'pune'),
+(3, 'finance', 'mumbai'),
+(4, 'marketing', 'delhi'),
+(5, 'sales', 'bangalore'),
+(6, 'testing', 'mumbai');
+
+insert into employee (emp_name, salary, dept_id, manager_id) 
+values
+('amit', 50000, 1, null),
+('priya', 60000, 1, 1),
+('rahul', 40000, 2, 1),
+('sneha', 70000, 3, 1),
+('neha', 55000, 3, 4),
+('karan', 45000, null, 1);
+
+insert into project 
+values
+(101, 'medical portal', 1),
+(102, 'banking management system', 1),
+(103, 'recruitment portal', 2),
+(104, 'financial management system', 3),
+(105, 'sales management system', 5);
+
+-- 1. Write a Relational Algebra expression to perform Cartesian Product (Cross Join) between Emp and Dept tables.
+select *
+from employee
+cross join department;
+
+-- 2. Write a SQL query to perform an INNER JOIN between Emp and Dept tables displaying EmpName and DeptName.
+select employee.emp_name, department.dept_name
+from employee
+inner join department
+on employee.dept_id = department.dept_id;
+
+-- 3. Write a SQL query to perform a LEFT OUTER JOIN between Emp and Dept tables to display all employees along with their department information, including employees without a department.
+select employee.emp_id, employee.emp_name, department.dept_name
+from employee
+left outer join department
+on employee.dept_id = department.dept_id;
+
+-- 4. Write a SQL query to perform a RIGHT OUTER JOIN between Emp and Dept tables.
+select employee.emp_id, employee.emp_name, department.dept_name
+from employee
+right outer join department
+on employee.dept_id = department.dept_id;
+
+-- 5. Write a SQL query to perform a NATURAL JOIN between Emp and Dept.
+select *
+from employee
+natural join department;
+
+-- 6. Write a SQL query to perform a CROSS JOIN between Emp and Project table.
+select *
+from employee
+cross join project;
+
+-- 7. Write a SQL query to create a new table EmpBackup with the same structure as Emp but no data.
+create table employeebackup like employee;
+
+-- 8. Write a SQL query to copy all data from Emp into EmpBackup table.
+insert into employeebackup
+select * from employee;
+
+-- 9. Write a SQL query to create a new table ProjectArchive with the same structure and data as Project.
+create table projectarchive like project;
+
+insert into projectarchive
+select * from project;
+
+-- 10. Write a SQL query to create an AUTO_INCREMENT sequence for EmpID in the Emp table during table creation.
+alter table employee
+modify emp_id int auto_increment;
+
+-- 11. Write a SQL query using a subquery to find all employees whose salary is greater than the average salary of all employees.
+select *
+from employee
+where salary > (
+select avg(salary)
+from employee
+);
+
+-- 12. Write a SQL query using a subquery in WHERE clause to find employees working in departments located in 'Mumbai'.
+select *
+from employee
+where dept_id in (
+select dept_id
+from department
+where location = 'mumbai'
+);
+
+-- 13. Write a SQL query to display all departments where the number of employees is greater than 5, using a subquery.
+insert into employee (emp_name, salary, dept_id, manager_id) values
+('employee7', 35000, 1, 1),
+('employee8', 36000, 1, 1),
+('employee9', 37000, 1, 1),
+('employee10', 38000, 1, 1),
+('employee11', 39000, 1, 1);
+
+select *
+from department
+where dept_id in (
+select dept_id
+from employee
+where dept_id is not null
+group by dept_id
+having count(*) > 5
+);
+
+-- 14. Write a subqueries for find out Max salary of employee.
+select *
+from employee
+where salary = (
+select max(salary)
+from employee
+);
+
+-- 15. Write a  self join query for each table.
+select
+e.emp_name as employee_name,
+m.emp_name as manager_name
+from employee e
+left join employee m
+on e.manager_id = m.emp_id;
+
+select
+d1.dept_name as department1,
+d2.dept_name as department2,
+d1.location
+from department d1
+join department d2
+on d1.location = d2.location
+and d1.dept_id < d2.dept_id;
+
+select
+p1.project_name as project1,
+p2.project_name as project2,
+p1.dept_id
+from project p1
+join project p2
+on p1.dept_id = p2.dept_id
+and p1.project_id < p2.project_id;
+
+
+OUTPUT:
+
+mysql> show databases;
++---------------------------+
+| Database                  |
++---------------------------+
+| assignment_2              |
+| assignment_3              |
+| aug26                     |
+| dbt_exam                  |
+| dbt_practice              |
+| information_schema        |
+| library_management_system |
+| mysql                     |
+| performance_schema        |
+| sys                       |
++---------------------------+
+11 rows in set (0.01 sec)
+
+mysql> create database assignment_4;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use assignment_4;
+Database changed
+mysql> create table department (
+    -> dept_id int primary key,
+    -> dept_name varchar(50),
+    -> location varchar(50)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table employee (
+    -> emp_id int primary key auto_increment,
+    -> emp_name varchar(50),
+    -> salary decimal(10,2),
+    -> dept_id int,
+    -> manager_id int,
+    -> foreign key (dept_id) references department(dept_id),
+    -> foreign key (manager_id) references employee(emp_id)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table project (
+    -> project_id int primary key,
+    -> project_name varchar(100),
+    -> dept_id int,
+    -> foreign key (dept_id) references department(dept_id)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into department
+    -> values
+    -> (1, 'it', 'mumbai'),
+    -> (2, 'hr', 'pune'),
+    -> (3, 'finance', 'mumbai'),
+    -> (4, 'marketing', 'delhi'),
+    -> (5, 'sales', 'bangalore'),
+    -> (6, 'testing', 'mumbai');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> insert into employee (emp_name, salary, dept_id, manager_id)
+    -> values
+    -> ('amit', 50000, 1, null),
+    -> ('priya', 60000, 1, 1),
+    -> ('rahul', 40000, 2, 1),
+    -> ('sneha', 70000, 3, 1),
+    -> ('neha', 55000, 3, 4),
+    -> ('karan', 45000, null, 1);
+Query OK, 6 rows affected (0.00 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> insert into project
+    -> values
+    -> (101, 'medical portal', 1),
+    -> (102, 'banking management system', 1),
+    -> (103, 'recruitment portal', 2),
+    -> (104, 'financial management system', 3),
+    -> (105, 'sales management system', 5);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from department;
++---------+-----------+-----------+
+| dept_id | dept_name | location  |
++---------+-----------+-----------+
+|       1 | it        | mumbai    |
+|       2 | hr        | pune      |
+|       3 | finance   | mumbai    |
+|       4 | marketing | delhi     |
+|       5 | sales     | bangalore |
+|       6 | testing   | mumbai    |
++---------+-----------+-----------+
+6 rows in set (0.00 sec)
+
+mysql> select * from employee;
++--------+----------+----------+---------+------------+
+| emp_id | emp_name | salary   | dept_id | manager_id |
++--------+----------+----------+---------+------------+
+|      1 | amit     | 50000.00 |       1 |       NULL |
+|      2 | priya    | 60000.00 |       1 |          1 |
+|      3 | rahul    | 40000.00 |       2 |          1 |
+|      4 | sneha    | 70000.00 |       3 |          1 |
+|      5 | neha     | 55000.00 |       3 |          4 |
+|      6 | karan    | 45000.00 |    NULL |          1 |
++--------+----------+----------+---------+------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from project;
++------------+-----------------------------+---------+
+| project_id | project_name                | dept_id |
++------------+-----------------------------+---------+
+|        101 | medical portal              |       1 |
+|        102 | banking management system   |       1 |
+|        103 | recruitment portal          |       2 |
+|        104 | financial management system |       3 |
+|        105 | sales management system     |       5 |
++------------+-----------------------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select *
+    -> from employee
+    -> cross join department;
++--------+----------+----------+---------+------------+---------+-----------+-----------+
+| emp_id | emp_name | salary   | dept_id | manager_id | dept_id | dept_name | location  |
++--------+----------+----------+---------+------------+---------+-----------+-----------+
+|      6 | karan    | 45000.00 |    NULL |          1 |       1 | it        | mumbai    |
+|      5 | neha     | 55000.00 |       3 |          4 |       1 | it        | mumbai    |
+|      4 | sneha    | 70000.00 |       3 |          1 |       1 | it        | mumbai    |
+|      3 | rahul    | 40000.00 |       2 |          1 |       1 | it        | mumbai    |
+|      2 | priya    | 60000.00 |       1 |          1 |       1 | it        | mumbai    |
+|      1 | amit     | 50000.00 |       1 |       NULL |       1 | it        | mumbai    |
+|      6 | karan    | 45000.00 |    NULL |          1 |       2 | hr        | pune      |
+|      5 | neha     | 55000.00 |       3 |          4 |       2 | hr        | pune      |
+|      4 | sneha    | 70000.00 |       3 |          1 |       2 | hr        | pune      |
+|      3 | rahul    | 40000.00 |       2 |          1 |       2 | hr        | pune      |
+|      2 | priya    | 60000.00 |       1 |          1 |       2 | hr        | pune      |
+|      1 | amit     | 50000.00 |       1 |       NULL |       2 | hr        | pune      |
+|      6 | karan    | 45000.00 |    NULL |          1 |       3 | finance   | mumbai    |
+|      5 | neha     | 55000.00 |       3 |          4 |       3 | finance   | mumbai    |
+|      4 | sneha    | 70000.00 |       3 |          1 |       3 | finance   | mumbai    |
+|      3 | rahul    | 40000.00 |       2 |          1 |       3 | finance   | mumbai    |
+|      2 | priya    | 60000.00 |       1 |          1 |       3 | finance   | mumbai    |
+|      1 | amit     | 50000.00 |       1 |       NULL |       3 | finance   | mumbai    |
+|      6 | karan    | 45000.00 |    NULL |          1 |       4 | marketing | delhi     |
+|      5 | neha     | 55000.00 |       3 |          4 |       4 | marketing | delhi     |
+|      4 | sneha    | 70000.00 |       3 |          1 |       4 | marketing | delhi     |
+|      3 | rahul    | 40000.00 |       2 |          1 |       4 | marketing | delhi     |
+|      2 | priya    | 60000.00 |       1 |          1 |       4 | marketing | delhi     |
+|      1 | amit     | 50000.00 |       1 |       NULL |       4 | marketing | delhi     |
+|      6 | karan    | 45000.00 |    NULL |          1 |       5 | sales     | bangalore |
+|      5 | neha     | 55000.00 |       3 |          4 |       5 | sales     | bangalore |
+|      4 | sneha    | 70000.00 |       3 |          1 |       5 | sales     | bangalore |
+|      3 | rahul    | 40000.00 |       2 |          1 |       5 | sales     | bangalore |
+|      2 | priya    | 60000.00 |       1 |          1 |       5 | sales     | bangalore |
+|      1 | amit     | 50000.00 |       1 |       NULL |       5 | sales     | bangalore |
+|      6 | karan    | 45000.00 |    NULL |          1 |       6 | testing   | mumbai    |
+|      5 | neha     | 55000.00 |       3 |          4 |       6 | testing   | mumbai    |
+|      4 | sneha    | 70000.00 |       3 |          1 |       6 | testing   | mumbai    |
+|      3 | rahul    | 40000.00 |       2 |          1 |       6 | testing   | mumbai    |
+|      2 | priya    | 60000.00 |       1 |          1 |       6 | testing   | mumbai    |
+|      1 | amit     | 50000.00 |       1 |       NULL |       6 | testing   | mumbai    |
++--------+----------+----------+---------+------------+---------+-----------+-----------+
+36 rows in set (0.00 sec)
+
+mysql> select employee.emp_name, department.dept_name
+    -> from employee
+    -> inner join department
+    -> on employee.dept_id = department.dept_id;
++----------+-----------+
+| emp_name | dept_name |
++----------+-----------+
+| amit     | it        |
+| priya    | it        |
+| rahul    | hr        |
+| sneha    | finance   |
+| neha     | finance   |
++----------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select employee.emp_id, employee.emp_name, department.dept_name
+    -> from employee
+    -> left outer join department
+    -> on employee.dept_id = department.dept_id;
++--------+----------+-----------+
+| emp_id | emp_name | dept_name |
++--------+----------+-----------+
+|      1 | amit     | it        |
+|      2 | priya    | it        |
+|      3 | rahul    | hr        |
+|      4 | sneha    | finance   |
+|      5 | neha     | finance   |
+|      6 | karan    | NULL      |
++--------+----------+-----------+
+6 rows in set (0.00 sec)
+
+mysql> select employee.emp_id, employee.emp_name, department.dept_name
+    -> from employee
+    -> right outer join department
+    -> on employee.dept_id = department.dept_id;
++--------+----------+-----------+
+| emp_id | emp_name | dept_name |
++--------+----------+-----------+
+|      1 | amit     | it        |
+|      2 | priya    | it        |
+|      3 | rahul    | hr        |
+|      4 | sneha    | finance   |
+|      5 | neha     | finance   |
+|   NULL | NULL     | marketing |
+|   NULL | NULL     | sales     |
+|   NULL | NULL     | testing   |
++--------+----------+-----------+
+8 rows in set (0.00 sec)
+
+mysql> select *
+    -> from employee
+    -> natural join department;
++---------+--------+----------+----------+------------+-----------+----------+
+| dept_id | emp_id | emp_name | salary   | manager_id | dept_name | location |
++---------+--------+----------+----------+------------+-----------+----------+
+|       1 |      1 | amit     | 50000.00 |       NULL | it        | mumbai   |
+|       1 |      2 | priya    | 60000.00 |          1 | it        | mumbai   |
+|       2 |      3 | rahul    | 40000.00 |          1 | hr        | pune     |
+|       3 |      4 | sneha    | 70000.00 |          1 | finance   | mumbai   |
+|       3 |      5 | neha     | 55000.00 |          4 | finance   | mumbai   |
++---------+--------+----------+----------+------------+-----------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select *
+    -> from employee
+    -> cross join project;
++--------+----------+----------+---------+------------+------------+-----------------------------+---------+
+| emp_id | emp_name | salary   | dept_id | manager_id | project_id | project_name                | dept_id |
++--------+----------+----------+---------+------------+------------+-----------------------------+---------+
+|      1 | amit     | 50000.00 |       1 |       NULL |        105 | sales management system     |       5 |
+|      1 | amit     | 50000.00 |       1 |       NULL |        104 | financial management system |       3 |
+|      1 | amit     | 50000.00 |       1 |       NULL |        103 | recruitment portal          |       2 |
+|      1 | amit     | 50000.00 |       1 |       NULL |        102 | banking management system   |       1 |
+|      1 | amit     | 50000.00 |       1 |       NULL |        101 | medical portal              |       1 |
+|      2 | priya    | 60000.00 |       1 |          1 |        105 | sales management system     |       5 |
+|      2 | priya    | 60000.00 |       1 |          1 |        104 | financial management system |       3 |
+|      2 | priya    | 60000.00 |       1 |          1 |        103 | recruitment portal          |       2 |
+|      2 | priya    | 60000.00 |       1 |          1 |        102 | banking management system   |       1 |
+|      2 | priya    | 60000.00 |       1 |          1 |        101 | medical portal              |       1 |
+|      3 | rahul    | 40000.00 |       2 |          1 |        105 | sales management system     |       5 |
+|      3 | rahul    | 40000.00 |       2 |          1 |        104 | financial management system |       3 |
+|      3 | rahul    | 40000.00 |       2 |          1 |        103 | recruitment portal          |       2 |
+|      3 | rahul    | 40000.00 |       2 |          1 |        102 | banking management system   |       1 |
+|      3 | rahul    | 40000.00 |       2 |          1 |        101 | medical portal              |       1 |
+|      4 | sneha    | 70000.00 |       3 |          1 |        105 | sales management system     |       5 |
+|      4 | sneha    | 70000.00 |       3 |          1 |        104 | financial management system |       3 |
+|      4 | sneha    | 70000.00 |       3 |          1 |        103 | recruitment portal          |       2 |
+|      4 | sneha    | 70000.00 |       3 |          1 |        102 | banking management system   |       1 |
+|      4 | sneha    | 70000.00 |       3 |          1 |        101 | medical portal              |       1 |
+|      5 | neha     | 55000.00 |       3 |          4 |        105 | sales management system     |       5 |
+|      5 | neha     | 55000.00 |       3 |          4 |        104 | financial management system |       3 |
+|      5 | neha     | 55000.00 |       3 |          4 |        103 | recruitment portal          |       2 |
+|      5 | neha     | 55000.00 |       3 |          4 |        102 | banking management system   |       1 |
+|      5 | neha     | 55000.00 |       3 |          4 |        101 | medical portal              |       1 |
+|      6 | karan    | 45000.00 |    NULL |          1 |        105 | sales management system     |       5 |
+|      6 | karan    | 45000.00 |    NULL |          1 |        104 | financial management system |       3 |
+|      6 | karan    | 45000.00 |    NULL |          1 |        103 | recruitment portal          |       2 |
+|      6 | karan    | 45000.00 |    NULL |          1 |        102 | banking management system   |       1 |
+|      6 | karan    | 45000.00 |    NULL |          1 |        101 | medical portal              |       1 |
++--------+----------+----------+---------+------------+------------+-----------------------------+---------+
+30 rows in set (0.00 sec)
+
+mysql> create table employeebackup like employee;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into employeebackup
+    -> select * from employee;
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select * from employeebackup;
++--------+----------+----------+---------+------------+
+| emp_id | emp_name | salary   | dept_id | manager_id |
++--------+----------+----------+---------+------------+
+|      1 | amit     | 50000.00 |       1 |       NULL |
+|      2 | priya    | 60000.00 |       1 |          1 |
+|      3 | rahul    | 40000.00 |       2 |          1 |
+|      4 | sneha    | 70000.00 |       3 |          1 |
+|      5 | neha     | 55000.00 |       3 |          4 |
+|      6 | karan    | 45000.00 |    NULL |          1 |
++--------+----------+----------+---------+------------+
+6 rows in set (0.00 sec)
+
+mysql> create table projectarchive like project;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into projectarchive
+    -> select * from project;
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from projectarchive;
++------------+-----------------------------+---------+
+| project_id | project_name                | dept_id |
++------------+-----------------------------+---------+
+|        101 | medical portal              |       1 |
+|        102 | banking management system   |       1 |
+|        103 | recruitment portal          |       2 |
+|        104 | financial management system |       3 |
+|        105 | sales management system     |       5 |
++------------+-----------------------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> alter table employee
+    -> modify emp_id int auto_increment;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select *
+    -> from employee
+    -> where salary > (
+    -> select avg(salary)
+    -> from employee
+    -> );
++--------+----------+----------+---------+------------+
+| emp_id | emp_name | salary   | dept_id | manager_id |
++--------+----------+----------+---------+------------+
+|      2 | priya    | 60000.00 |       1 |          1 |
+|      4 | sneha    | 70000.00 |       3 |          1 |
+|      5 | neha     | 55000.00 |       3 |          4 |
++--------+----------+----------+---------+------------+
+3 rows in set (0.00 sec)
+
+mysql> select *
+    -> from employee
+    -> where dept_id in (
+    -> select dept_id
+    -> from department
+    -> where location = 'mumbai'
+    -> );
++--------+----------+----------+---------+------------+
+| emp_id | emp_name | salary   | dept_id | manager_id |
++--------+----------+----------+---------+------------+
+|      1 | amit     | 50000.00 |       1 |       NULL |
+|      2 | priya    | 60000.00 |       1 |          1 |
+|      4 | sneha    | 70000.00 |       3 |          1 |
+|      5 | neha     | 55000.00 |       3 |          4 |
++--------+----------+----------+---------+------------+
+4 rows in set (0.00 sec)
+
+mysql> insert into employee (emp_name, salary, dept_id, manager_id) values
+    -> ('employee7', 35000, 1, 1),
+    -> ('employee8', 36000, 1, 1),
+    -> ('employee9', 37000, 1, 1),
+    -> ('employee10', 38000, 1, 1),
+    -> ('employee11', 39000, 1, 1);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++--------+------------+----------+---------+------------+
+| emp_id | emp_name   | salary   | dept_id | manager_id |
++--------+------------+----------+---------+------------+
+|      1 | amit       | 50000.00 |       1 |       NULL |
+|      2 | priya      | 60000.00 |       1 |          1 |
+|      3 | rahul      | 40000.00 |       2 |          1 |
+|      4 | sneha      | 70000.00 |       3 |          1 |
+|      5 | neha       | 55000.00 |       3 |          4 |
+|      6 | karan      | 45000.00 |    NULL |          1 |
+|      7 | employee7  | 35000.00 |       1 |          1 |
+|      8 | employee8  | 36000.00 |       1 |          1 |
+|      9 | employee9  | 37000.00 |       1 |          1 |
+|     10 | employee10 | 38000.00 |       1 |          1 |
+|     11 | employee11 | 39000.00 |       1 |          1 |
++--------+------------+----------+---------+------------+
+11 rows in set (0.00 sec)
+
+mysql> select *
+    -> from department
+    -> where dept_id in (
+    -> select dept_id
+    -> from employee
+    -> where dept_id is not null
+    -> group by dept_id
+    -> having count(*) > 5
+    -> );
++---------+-----------+----------+
+| dept_id | dept_name | location |
++---------+-----------+----------+
+|       1 | it        | mumbai   |
++---------+-----------+----------+
+1 row in set (0.00 sec)
+
+mysql> select *
+    -> from employee
+    -> where salary = (
+    -> select max(salary)
+    -> from employee
+    -> );
++--------+----------+----------+---------+------------+
+| emp_id | emp_name | salary   | dept_id | manager_id |
++--------+----------+----------+---------+------------+
+|      4 | sneha    | 70000.00 |       3 |          1 |
++--------+----------+----------+---------+------------+
+1 row in set (0.00 sec)
+
+mysql> select
+    -> e.emp_name as employee_name,
+    -> m.emp_name as manager_name
+    -> from employee e
+    -> left join employee m
+    -> on e.manager_id = m.emp_id;
++---------------+--------------+
+| employee_name | manager_name |
++---------------+--------------+
+| amit          | NULL         |
+| priya         | amit         |
+| rahul         | amit         |
+| sneha         | amit         |
+| neha          | sneha        |
+| karan         | amit         |
+| employee7     | amit         |
+| employee8     | amit         |
+| employee9     | amit         |
+| employee10    | amit         |
+| employee11    | amit         |
++---------------+--------------+
+11 rows in set (0.00 sec)
+
+mysql> select
+    -> d1.dept_name as department1,
+    -> d2.dept_name as department2,
+    -> d1.location
+    -> from department d1
+    -> join department d2
+    -> on d1.location = d2.location
+    -> and d1.dept_id < d2.dept_id;
++-------------+-------------+----------+
+| department1 | department2 | location |
++-------------+-------------+----------+
+| it          | finance     | mumbai   |
+| it          | testing     | mumbai   |
+| finance     | testing     | mumbai   |
++-------------+-------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select
+    -> p1.project_name as project1,
+    -> p2.project_name as project2,
+    -> p1.dept_id
+    -> from project p1
+    -> join project p2
+    -> on p1.dept_id = p2.dept_id
+    -> and p1.project_id < p2.project_id;
++----------------+---------------------------+---------+
+| project1       | project2                  | dept_id |
++----------------+---------------------------+---------+
+| medical portal | banking management system |       1 |
++----------------+---------------------------+---------+
+1 row in set (0.00 sec)
+
+mysql>  
